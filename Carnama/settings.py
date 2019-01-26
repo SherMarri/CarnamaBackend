@@ -53,6 +53,7 @@ INSTALLED_APPS = [
 SITE_ID = 1
 
 REST_USE_JWT = True
+ACCOUNT_EMAIL_VERIFICATION = 'none'  # No email verification required
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
