@@ -3,6 +3,6 @@ from django.urls import include
 
 
 urlpatterns = [
-    url('rest-auth/', include('rest_auth.urls')),
-    url('rest-auth/registration/', include('rest_auth.registration.urls'))
+    url('', include('accounts.rest_auth_urls')),
+    url('registration/', include('rest_auth.registration.urls'))
 ]
