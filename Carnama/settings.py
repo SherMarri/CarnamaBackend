@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'accounts',
     'vehicles',
+    'common',
+    'listings',
 ]
 
 SITE_ID = 1
