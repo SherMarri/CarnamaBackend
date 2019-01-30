@@ -18,8 +18,4 @@ class Ad(BaseModel):
     price = models.FloatField()
     contact = models.CharField(max_length=20)
     description = models.TextField()
-
-
-class AdFeatures(models.Model):
-    ad = models.ForeignKey(Ad, on_delete=models.CASCADE)
-    feature = models.ForeignKey(Feature, on_delete=models.CASCADE)
+    features = models.ManyToManyField(Feature, related_name='ads')
