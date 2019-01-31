@@ -1,18 +1,20 @@
 from django.db import models
 
+from common.models import Region
 
-CARS = 1
-BIKES = 2
+CAR = 1
+BIKE = 2
 
 VEHICLE_TYPES = (
-    ("Cars", CARS),
-    ("BIKES", BIKES)
+    (CAR, "Car"),
+    (BIKE, "Bike")
 )
 
 
 class Make(models.Model):
     name = models.CharField(max_length=128)
     vehicle_type = models.IntegerField(choices=VEHICLE_TYPES)
+    region = models.ForeignKey(Region, on_delete=models.CASCADE)
 
 
 class Model(models.Model):

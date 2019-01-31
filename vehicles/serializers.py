@@ -6,7 +6,7 @@ from vehicles import models
 class MakeSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Make
-        fields = ('id', 'name', 'vehicle_type')
+        fields = ('id', 'name', 'vehicle_type', 'region')
 
 
 class ModelSerializer(serializers.ModelSerializer):
