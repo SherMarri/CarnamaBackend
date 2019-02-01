@@ -9,5 +9,5 @@ class AdSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Ad
-        fields = ('id', 'user', 'variant', 'year', 'color', 'mileage', 'address',
+        fields = ('id', 'user', 'model', 'variant', 'year', 'color', 'mileage', 'address',
                   'city', 'price', 'contact', 'description', 'features')

@@ -32,5 +32,3 @@ class Feature(models.Model):
     description = models.TextField(max_length=500, null=True, blank=True)
     vehicle_type = models.IntegerField(choices=VEHICLE_TYPES)
 
-
-

@@ -1,4 +1,5 @@
 from rest_framework.permissions import IsAdminUser
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from vehicles import serializers, models
@@ -26,3 +27,85 @@ class FeatureViewSet(ModelViewSet):
     permission_classes = (IsAdminUser,)
     serializer_class = serializers.FeatureSerializer
     queryset = models.Feature.objects.all()
+
+
+def process_makes(queryset):
+    results = []
+    for make in queryset:
+        results.append({
+            'id': make.id,
+            'type': 'make',
+            'text': make.name,
+            'vehicle_type': make.vehicle_type
+        })
+    return results
+
+
+def process_models(queryset):
+    results = []
+    for model in queryset:
+        results.append({
+            'id': model.id,
+            'type': 'model',
+            'text': '{0} {1}'.format(model.make.name, model.name)
+        })
+    return results
+
+
+def process_variants(queryset):
+    results = []
+    for variant in queryset:
+        results.append({
+            'id': variant.id,
+            'type': 'variant',
+            'text': '{0} {1} {2}'.format(
+                variant.model.make.name, variant.model.name, variant.name)
+        })
+    return results
+
+
+def process_results(queryset, source):
+    if source == 'makes':
+        return process_makes(queryset)
+
+    if source == 'models':
+        return process_models(queryset)
+
+    if source == 'variants':
+        return process_variants(queryset)
+
+
+class AutocompleteAPIView(APIView):
+    """
+    Autocomplete API
+    WARNING: Unstable code, needs to be improved
+    """
+    def get(self, request):
+        make_id = request.GET.get('make_id', None)
+        model_id = request.GET.get('model_id', None)
+        term = request.GET.get('term', None)
+        region_id = request.GET.get('region_id')
+
+        results = []
+        if make_id:
+            if model_id:
+                variants = models.Variant.objects.filter(
+                    model_id=model_id, name__istartswith=term)
+                results.append(process_results(variants, 'variants'))
+            else:
+                v_models = models.Model.objects.filter(
+                    make_id=make_id, name__istartswith=term)
+                results.append(process_results(v_models, 'models'))
+        else:
+            makes = models.Make.objects.filter(name__istartswith=term)[:5]
+            v_models = models.Model.objects.filter(
+                name__istartswith=term, make__region_id=region_id
+            ).select_related('make')[:5]
+            variants = models.Variant.objects.filter(
+                name__istartswith=term, model__make__region_id=region_id
+            ).select_related('model__make')[:5]
+            results.append(process_results(makes, 'makes'))
+            results.append(process_results(v_models, 'models'))
+            results.append(process_results(variants, 'variants'))
+
+
