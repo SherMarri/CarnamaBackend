@@ -1,11 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
+from common.models import BaseModel
 
 User = get_user_model()
 
 
-class Profile(models.Model):
+class Profile(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     ADMIN = 1
@@ -23,3 +24,4 @@ class Profile(models.Model):
     profile_type = models.IntegerField(choices=ProfileTypes)
     display_name = models.CharField(max_length=128)
     # TODO: add display_image and integrate with S3 bucket
+    is_banned = models.BooleanField(default=False, null=True, blank=True)

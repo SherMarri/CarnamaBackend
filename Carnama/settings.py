@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'vehicles',
     'common',
     'listings',
+    'transactions'
 ]
 
 SITE_ID = 1
