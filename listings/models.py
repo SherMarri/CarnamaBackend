@@ -60,7 +60,8 @@ class AutosaleRequest(BaseModel):
 
 
 class FavoritedAd(BaseModel):
-    ad = models.ForeignKey(Ad, on_delete=models.CASCADE)
+    ad = models.ForeignKey(Ad, on_delete=models.CASCADE,
+                           related_name='favorited_ads')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
