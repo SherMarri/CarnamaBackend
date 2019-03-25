@@ -15,11 +15,13 @@ class Make(BaseModel):
     name = models.CharField(max_length=128)
     vehicle_type = models.IntegerField(choices=VEHICLE_TYPES)
     region = models.ForeignKey(Region, on_delete=models.CASCADE)
+    is_popular = models.BooleanField(null=True, default=False)
 
 
 class Model(BaseModel):
     name = models.CharField(max_length=128)
     make = models.ForeignKey(Make, on_delete=models.CASCADE)
+    is_popular = models.BooleanField(null=True, default=False)
 
 
 class Variant(BaseModel):

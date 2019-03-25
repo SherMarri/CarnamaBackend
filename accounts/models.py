@@ -7,7 +7,7 @@ User = get_user_model()
 
 
 class Profile(BaseModel):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
 
     ADMIN = 1
     AGENT = 2
@@ -15,13 +15,14 @@ class Profile(BaseModel):
     SHOWROOM = 4
 
     ProfileTypes = (
-        ('Admin', ADMIN),
-        ('Agent', AGENT),
-        ('Regular', REGULAR),
-        ('Showroom', SHOWROOM)
+        (ADMIN, 'Admin'),
+        (AGENT, 'Agent'),
+        (REGULAR, 'Regular'),
+        (SHOWROOM, 'Showroom')
     )
 
-    profile_type = models.IntegerField(choices=ProfileTypes)
+    profile_type = models.IntegerField(choices=ProfileTypes, default=REGULAR)
     display_name = models.CharField(max_length=128)
     # TODO: add display_image and integrate with S3 bucket
     is_banned = models.BooleanField(default=False, null=True, blank=True)
+

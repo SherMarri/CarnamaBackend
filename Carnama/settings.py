@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'rest_auth.registration',
+    'corsheaders',
     # For setting up social login:
     # https://django-rest-auth.readthedocs.io/en/latest/installation.html
     'allauth.socialaccount',
@@ -61,6 +62,7 @@ REST_USE_JWT = True
 ACCOUNT_EMAIL_VERIFICATION = 'none'  # No email verification required
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -69,6 +71,14 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ORIGIN_WHITELIST = (
+    'localhost:3000',
+)
+
+REST_AUTH_SERIALIZERS = {
+    'JWT_SERIALIZER': 'accounts.serializers.JWTUserDetailsSerializer'
+}
 
 ROOT_URLCONF = 'Carnama.urls'
 

@@ -10,7 +10,7 @@ class AdSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Ad
         fields = ('id', 'user', 'model', 'variant', 'year', 'color', 'mileage', 'address',
-                  'city', 'price', 'contact', 'description', 'features', 'views',
+                  'city', 'price', 'contact', 'comments', 'features', 'views', 'youtube_link',
                   'is_active', 'is_verified', 'is_featured', 'status')
 
 

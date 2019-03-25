@@ -8,7 +8,7 @@ User = get_user_model()
 
 
 class Ad(BaseModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     variant = models.ForeignKey(v_models.Variant, on_delete=models.SET_NULL,
                                 null=True, blank=True)
     model = models.ForeignKey(v_models.Model, on_delete=models.SET_NULL,
@@ -20,9 +20,10 @@ class Ad(BaseModel):
     city = models.ForeignKey(City, on_delete=models.CASCADE)
     price = models.FloatField()
     contact = models.CharField(max_length=20)
-    description = models.TextField(null=True, blank=True)
+    comments = models.TextField(null=True, blank=True)
     features = models.ManyToManyField(v_models.Feature, related_name='ads')
     views = models.IntegerField(default=0)
+    youtube_link = models.CharField(max_length=128, null=True, blank=True)
 
     PENDING = 1
     APPROVED = 2
@@ -38,6 +39,12 @@ class Ad(BaseModel):
     is_active = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)
     is_featured = models.BooleanField(default=False)
+
+
+class AdPhoto(BaseModel):
+    ad = models.ForeignKey(Ad, on_delete=models.SET_NULL, null=True,
+                           blank=True, related_name='photos')
+    uuid = models.CharField(max_length=128)
 
 
 class AutosaleRequest(BaseModel):

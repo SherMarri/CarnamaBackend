@@ -1,3 +1,4 @@
+import boto3
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -9,7 +10,7 @@ from vehicles.models import Feature
 
 
 class PostAdAPIView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     def associate_ad_features(self, ad, feature_ids):
         """
@@ -21,17 +22,57 @@ class PostAdAPIView(APIView):
         features = Feature.objects.filter(id__in=feature_ids)
         ad.features.set(features)
 
+
+    def associate_ad_photos(self, ad, image_ids):
+        """
+        Associates the images uploaded on S3 with this ad
+        :param ad:
+        :param image_ids:
+        :return:
+        """
+        ad_photos = []
+        for id in image_ids:
+            ad_photos.append(models.AdPhoto(ad_id=ad.id, uuid=id))
+
+        models.AdPhoto.objects.bulk_create(ad_photos)
+
     def post(self, request):
         data = request.data
         ad_data = data['ad']
         ad_feature_ids = data['feature_ids']
+        ad_image_ids = data['image_ids']
         serializer = serializers.AdSerializer(data=ad_data)
         if not serializer.is_valid():
             return Response(status=status.HTTP_400_BAD_REQUEST,
                             data=serializer.errors)
         ad = serializer.save()
         self.associate_ad_features(ad, ad_feature_ids)
+        self.associate_ad_photos(ad, ad_image_ids)
         return Response(status=status.HTTP_201_CREATED, data=serializer.data)
+
+
+class GetPresignedUrlsAPIView(APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        data = request.data
+        if 'files' not in data:
+            return Response(status=status.HTTP_400_BAD_REQUEST,
+                            data={'message': 'Files missing'})
+
+        urls = self.get_presigned_urls(data['files'])
+        return Response(status=status.HTTP_200_OK, data=urls)
+
+    def get_presigned_urls(self, files):
+        urls = []
+        s3 = boto3.client('s3')
+        for f in files:
+            response = s3.generate_presigned_url(
+                'put_object', Params={'Bucket': 'carnama-assets', 'Key': f['id'],
+                                      'ContentType': f['type']},
+                ExpiresIn=120, HttpMethod='PUT')
+            urls.append(response)
+        return urls
 
 
 class AutosaleRequestViewSet(ModelViewSet):
