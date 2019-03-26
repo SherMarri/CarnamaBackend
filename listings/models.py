@@ -36,6 +36,50 @@ class Ad(BaseModel):
         (EXPIRED, "Expired"),
     )
     status = models.IntegerField(choices=AD_STATUS_CHOICES, default=PENDING)
+
+    SEDAN = 1
+    CABRIOLET = 2
+    WAGON = 3
+    BODY_TYPES = (
+        (SEDAN, "Sedan"),
+        (CABRIOLET, "Cabriolet"),
+        (WAGON, "Wagon")
+    )
+    body_type = models.IntegerField(choices=BODY_TYPES)
+    right_handed_drive = models.BooleanField(default=True)
+
+    MANUAL = 1
+    AUTOMATIC = 2
+    CVT = 3
+    SEMI_AUTOMATIC = 4
+    TRANSMISSION_TYPES = (
+        (MANUAL, "Manual"),
+        (CABRIOLET, "Cabriolet"),
+        (WAGON, "Wagon")
+    )
+    transmission_type = models.IntegerField(choices=TRANSMISSION_TYPES)
+
+    MODIFICATION_1_8 = 1
+    MODIFICATION_2_0 = 2
+    MODIFICATION_2_5 = 3
+    MODIFICATION_3_5 = 4
+    MODIFICATION_5_5 = 5
+    MODIFICATION_TYPES = (
+        (MODIFICATION_1_8, "1.8L"),
+        (MODIFICATION_2_0, "2.0L"),
+        (MODIFICATION_2_5, "2.5L"),
+        (MODIFICATION_3_5, "3.5L"),
+        (MODIFICATION_5_5, "5.5L")
+    )
+    modification_type = models.IntegerField(choices=MODIFICATION_TYPES)
+
+    PETROL = 1
+    DIESEL = 2
+    FEUL_TYPES = (
+        (PETROL, 'Petrol'),
+        (DIESEL, 'Diesel')
+    )
+    feul_type = models.IntegerField(choices=FEUL_TYPES)
     is_active = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)
     is_featured = models.BooleanField(default=False)

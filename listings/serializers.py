@@ -9,9 +9,11 @@ class AdSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Ad
-        fields = ('id', 'user', 'model', 'variant', 'year', 'color', 'mileage', 'address',
-                  'city', 'price', 'contact', 'comments', 'features', 'views', 'youtube_link',
-                  'is_active', 'is_verified', 'is_featured', 'status')
+        fields = ('id', 'user', 'model', 'variant', 'year', 'color', 'mileage',
+                  'body_type', 'transmission_type', 'modification_type',
+                  'feul_type', 'address', 'city', 'price', 'contact', 'comments',
+                  'features', 'views', 'youtube_link', 'is_active', 'is_verified',
+                  'is_featured', 'status')
 
 
 class AutosaleRequestSerializer(serializers.ModelSerializer):
