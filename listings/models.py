@@ -80,6 +80,16 @@ class Ad(BaseModel):
         (DIESEL, 'Diesel')
     )
     feul_type = models.IntegerField(choices=FEUL_TYPES)
+    gas_equipment = models.BooleanField(default=False)
+
+    ASSEMBLY_PAKISTAN = 1
+    ASSEMBLY_IMPORTED = 2
+    ASSEMBLY_TYPES = (
+        (ASSEMBLY_PAKISTAN, 'Pakistan'),
+        (ASSEMBLY_IMPORTED, 'Imported')
+    )
+    assembly_type = models.IntegerField(choices=ASSEMBLY_TYPES)
+
     is_active = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)
     is_featured = models.BooleanField(default=False)
