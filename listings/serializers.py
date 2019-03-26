@@ -11,9 +11,9 @@ class AdSerializer(serializers.ModelSerializer):
         model = models.Ad
         fields = ('id', 'user', 'model', 'variant', 'year', 'color', 'mileage',
                   'body_type', 'transmission_type', 'modification_type',
-                  'gas_equipment', 'feul_type', 'address', 'city', 'price',
-                  'contact', 'comments', 'features', 'views', 'youtube_link',
-                  'is_active', 'is_verified''is_featured', 'status')
+                  'gas_equipment', 'assembly_type', 'fuel_type', 'address',
+                  'city', 'price', 'contact', 'comments', 'features', 'views', 'youtube_link',
+                  'is_active', 'is_verified', 'is_featured', 'status')
 
 
 class AutosaleRequestSerializer(serializers.ModelSerializer):

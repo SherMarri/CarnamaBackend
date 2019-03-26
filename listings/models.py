@@ -75,11 +75,11 @@ class Ad(BaseModel):
 
     PETROL = 1
     DIESEL = 2
-    FEUL_TYPES = (
+    FUEL_TYPES = (
         (PETROL, 'Petrol'),
         (DIESEL, 'Diesel')
     )
-    feul_type = models.IntegerField(choices=FEUL_TYPES)
+    fuel_type = models.IntegerField(choices=FUEL_TYPES)
     gas_equipment = models.BooleanField(default=False)
 
     ASSEMBLY_PAKISTAN = 1
