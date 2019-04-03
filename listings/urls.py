@@ -17,6 +17,7 @@ router.register('reported_ads', viewset=views.ReportedAdViewSet,
                 base_name='listings-reported-ads')
 urlpatterns = [
     url('new/$', view=views.PostAdAPIView.as_view(), name='listings-new'),
+    url('(?P<id>\d+)', view=views.FetchAdAPIView.as_view(), name='listings-detail'),
     url('', include(router.urls)),
     url('get_presigned_urls', view=views.GetPresignedUrlsAPIView.as_view(), name='get-presigned-urls')
 ]

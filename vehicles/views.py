@@ -76,6 +76,7 @@ class FetchFeaturesAPIView(ListAPIView):
         else:
             queryset = models.Feature.objects.all()
 
+        queryset = queryset.order_by('name')
         serializer = serializers.FeatureSerializer(queryset, many=True)
         return Response(status=status.HTTP_200_OK, data=serializer.data)
 

@@ -17,9 +17,13 @@ class Ad(BaseModel):
     color = models.CharField(max_length=20)
     mileage = models.IntegerField(null=True, blank=True)
     address = models.CharField(max_length=128, null=True, blank=True)
-    city = models.ForeignKey(City, on_delete=models.CASCADE)
+    city = models.ForeignKey(City, on_delete=models.CASCADE,
+                             related_name='ads')
+    registration_city = models.ForeignKey(City, on_delete=models.CASCADE,
+                                          related_name='registered_vehicle_ads')
     price = models.FloatField()
     contact = models.CharField(max_length=20)
+    contact_person = models.CharField(max_length=128)
     comments = models.TextField(null=True, blank=True)
     features = models.ManyToManyField(v_models.Feature, related_name='ads')
     views = models.IntegerField(default=0)
@@ -54,8 +58,9 @@ class Ad(BaseModel):
     SEMI_AUTOMATIC = 4
     TRANSMISSION_TYPES = (
         (MANUAL, "Manual"),
-        (CABRIOLET, "Cabriolet"),
-        (WAGON, "Wagon")
+        (AUTOMATIC, "Automatic"),
+        (CVT, "CVT"),
+        (SEMI_AUTOMATIC, "Semi-automatic")
     )
     transmission_type = models.IntegerField(choices=TRANSMISSION_TYPES)
 

@@ -32,6 +32,7 @@ class Variant(BaseModel):
 class Feature(BaseModel):
     name = models.CharField(max_length=128)
     description = models.TextField(max_length=500, null=True, blank=True)
+    code = models.CharField(max_length=20, null=True, blank=True)
     vehicle_type = models.IntegerField(choices=VEHICLE_TYPES)
 
 

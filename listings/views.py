@@ -1,5 +1,6 @@
 import boto3
 from rest_framework import status
+from rest_framework.generics import RetrieveAPIView, get_object_or_404
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -49,6 +50,30 @@ class PostAdAPIView(APIView):
         self.associate_ad_features(ad, ad_feature_ids)
         self.associate_ad_photos(ad, ad_image_ids)
         return Response(status=status.HTTP_201_CREATED, data=serializer.data)
+
+
+class FetchAdAPIView(RetrieveAPIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request, id):
+        ad = models.Ad.objects.filter(
+            id=id).select_related('model__make', 'city').prefetch_related(
+            'photos', 'features').first()
+
+        # Increment ad view
+        ad.views += 1
+        ad.save()
+        if ad is None:
+            return Response(status=status.HTTP_404_NOT_FOUND,
+                            data={
+                                'message': 'Ad not found.'
+                            })
+        serializer = serializers.AdDetailsSerializer(ad)
+        data = {
+            'ad': serializer.data
+        }
+        return Response(status=status.HTTP_200_OK, data=data)
+
 
 
 class GetPresignedUrlsAPIView(APIView):

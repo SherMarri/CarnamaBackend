@@ -24,4 +24,4 @@ class VariantSerializer(serializers.ModelSerializer):
 class FeatureSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Feature
-        fields = ('id', 'name', 'description', 'vehicle_type')
+        fields = ('id', 'name', 'code', 'description', 'vehicle_type')
