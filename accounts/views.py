@@ -1,3 +1,5 @@
+from django.conf import LazySettings
+from rest_auth.views import LoginView
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -33,7 +35,7 @@ class ProfileAPIView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST,
                             data=serializer.errors)
 
-        if 'user' in data and data['user']!=request.user.id:
+        if 'user' in data and data['user'] != request.user.id:
             return Response(status=status.HTTP_400_BAD_REQUEST,
                             data={
                                 'user': ['Invalid User ID']
@@ -41,3 +43,24 @@ class ProfileAPIView(APIView):
 
         serializer.save()
         return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+
+class CustomLoginView(LoginView):
+    def get_response(self):
+        serializer_class = self.get_response_serializer()
+
+        if getattr(settings, 'REST_USE_JWT', False):
+            data = {
+                'user': self.user,
+                'token': self.token,
+            }
+            serializer = serializer_class(instance=data,
+                                          context={'request': self.request})
+        else:
+            serializer = serializer_class(instance=self.token,
+                                          context={'request': self.request})
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+settings = LazySettings()

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'rest_auth.registration',
+    'corsheaders',
     # For setting up social login:
     # https://django-rest-auth.readthedocs.io/en/latest/installation.html
     'allauth.socialaccount',
@@ -52,6 +53,7 @@ INSTALLED_APPS = [
     'vehicles',
     'common',
     'listings',
+    'transactions'
 ]
 
 SITE_ID = 1
@@ -60,6 +62,7 @@ REST_USE_JWT = True
 ACCOUNT_EMAIL_VERIFICATION = 'none'  # No email verification required
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -68,6 +71,14 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ORIGIN_WHITELIST = (
+    'localhost:3000',
+)
+
+REST_AUTH_SERIALIZERS = {
+    'JWT_SERIALIZER': 'accounts.serializers.JWTUserDetailsSerializer'
+}
 
 ROOT_URLCONF = 'Carnama.urls'
 
@@ -94,9 +105,17 @@ WSGI_APPLICATION = 'Carnama.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'carnama',
+        'USER': 'postgres',
+        'PASSWORD': 'asd',
+        'HOST': 'localhost',
+        'PORT': '5432'
     }
 }
 
