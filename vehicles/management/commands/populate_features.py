@@ -11,7 +11,7 @@ class Command(BaseCommand):
             reader = csv.reader(file, delimiter=',')
             for row in reader:
                 m.append(models.Feature(
-                    name=row[1], vehicle_type=models.CAR, code=row[-1]))
+                    name=row[1], vehicle_type=models.CAR, code=row[6]))
         models.Feature.objects.bulk_create(m)
         print('{0} features added.'.format(len(m)))
 
