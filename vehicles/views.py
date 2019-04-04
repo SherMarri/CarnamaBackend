@@ -21,7 +21,9 @@ class FetchMakesAPIView(ListAPIView):
         if request.GET.get('term', None):
             search_term = request.GET.get('term')
 
-        queryset = models.Make.objects.filter(region__name=region, name__istartswith=search_term)
+        queryset = models.Make.objects.filter(
+            region__name=region, name__istartswith=search_term
+        ).order_by('name')
         serializer = serializers.MakeSerializer(queryset, many=True)
         popular_makes = queryset.filter(is_popular=True)
         if popular_makes.count() >= 7:
@@ -48,7 +50,9 @@ class FetchModelsAPIView(ListAPIView):
         if request.GET.get('term', None):
             search_term = request.GET.get('term')
 
-        queryset = models.Model.objects.filter(make_id=make_id, name__istartswith=search_term)
+        queryset = models.Model.objects.filter(
+            make_id=make_id, name__istartswith=search_term
+        ).order_by('name')
         serializer = serializers.ModelSerializer(queryset, many=True)
         # popular_models = queryset.filter(is_popular=True)
         # if popular_models.count() >= 9:
