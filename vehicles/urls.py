@@ -12,7 +12,7 @@ router.register('features', views.FeatureViewSet, basename='vehicles-feature')
 
 urlpatterns = [
     path('', include(router.urls)),
-    url('search/$', view=views.AutocompleteAPIView.as_view(), name='listings-new'),
+    url('search/$', view=views.AutocompleteAPIView.as_view(), name='vehicles-search'),
     url('fetch-makes/$', view=views.FetchMakesAPIView.as_view(), name='fetch-makes'),
     url('fetch-models/$', view=views.FetchModelsAPIView.as_view(), name='fetch-models'),
     url('fetch-features/$', view=views.FetchFeaturesAPIView.as_view(), name='fetch-models'),

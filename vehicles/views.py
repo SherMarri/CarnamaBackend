@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAdminUser, AllowAny
@@ -110,38 +111,31 @@ class FeatureViewSet(ModelViewSet):
 
 
 def process_makes(queryset):
-    results = []
-    for make in queryset:
-        results.append({
-            'id': make.id,
-            'type': 'make',
-            'text': make.name,
-            'vehicle_type': make.vehicle_type
-        })
-    return results
+    # results = []
+    # for make in queryset:
+    #     results.append({
+    #         'id': make.id,
+    #         'type': 'make',
+    #         'text': make.name,
+    #     })
+    return list(map(lambda m: {
+        'id': m.id, 'type': 'make', 'text': m.name
+    }, queryset.all()))
+    # return results
 
 
 def process_models(queryset):
-    results = []
-    for model in queryset:
-        results.append({
-            'id': model.id,
-            'type': 'model',
-            'text': '{0} {1}'.format(model.make.name, model.name)
-        })
-    return results
-
-
-def process_variants(queryset):
-    results = []
-    for variant in queryset:
-        results.append({
-            'id': variant.id,
-            'type': 'variant',
-            'text': '{0} {1} {2}'.format(
-                variant.model.make.name, variant.model.name, variant.name)
-        })
-    return results
+    # results = []
+    # for model in queryset:
+    #     results.append({
+    #         'id': model.id,
+    #         'type': 'model',
+    #         'text': '{0} {1}'.format(model.make.name, model.name)
+    #     })
+    # return results
+    return list(map(lambda m: {
+        'id': m.id, 'type': 'model', 'text': '{0} {1}'.format(m.make.name, m.name)
+    }, queryset.all()))
 
 
 def process_results(queryset, source):
@@ -151,41 +145,24 @@ def process_results(queryset, source):
     if source == 'models':
         return process_models(queryset)
 
-    if source == 'variants':
-        return process_variants(queryset)
-
 
 class AutocompleteAPIView(APIView):
     """
     Autocomplete API
     WARNING: Unstable code, needs to be improved
     """
+    permission_classes = (AllowAny,)
     def get(self, request):
-        make_id = request.GET.get('make_id', None)
-        model_id = request.GET.get('model_id', None)
         term = request.GET.get('term', None)
         region_id = request.GET.get('region_id')
 
-        results = []
-        if make_id:
-            if model_id:
-                variants = models.Variant.objects.filter(
-                    model_id=model_id, name__istartswith=term)
-                results.append(process_results(variants, 'variants'))
-            else:
-                v_models = models.Model.objects.filter(
-                    make_id=make_id, name__istartswith=term)
-                results.append(process_results(v_models, 'models'))
-        else:
-            makes = models.Make.objects.filter(name__istartswith=term)[:5]
-            v_models = models.Model.objects.filter(
-                name__istartswith=term, make__region_id=region_id
-            ).select_related('make')[:5]
-            variants = models.Variant.objects.filter(
-                name__istartswith=term, model__make__region_id=region_id
-            ).select_related('model__make')[:5]
-            results.append(process_results(makes, 'makes'))
-            results.append(process_results(v_models, 'models'))
-            results.append(process_results(variants, 'variants'))
+        makes = models.Make.objects.filter(name__istartswith=term)[:5]
+        v_models = models.Model.objects.filter(
+            Q(name__istartswith=term) | Q(make__name__istartswith=term), make__region_id=region_id
+        ).select_related('make')[:5]
+
+        results = process_results(makes, 'makes')
+        results += process_results(v_models, 'models')
+        return Response(status=status.HTTP_200_OK, data=results)
 
 
