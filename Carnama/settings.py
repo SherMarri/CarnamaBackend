@@ -74,7 +74,8 @@ MIDDLEWARE = [
 
 CORS_ORIGIN_WHITELIST = (
     'localhost:3000',
-    'dev.carnama.com'
+    'dev.carnama.com',
+    '34.205.24.235'
 )
 
 REST_AUTH_SERIALIZERS = {
