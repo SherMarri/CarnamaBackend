@@ -156,10 +156,10 @@ class AutocompleteAPIView(APIView):
         term = request.GET.get('term', None)
         region_id = request.GET.get('region_id')
 
-        makes = models.Make.objects.filter(name__istartswith=term)[:5]
+        makes = models.Make.objects.filter(name__istartswith=term)[:10]
         v_models = models.Model.objects.filter(
             Q(name__istartswith=term) | Q(make__name__istartswith=term), make__region_id=region_id
-        ).select_related('make')[:5]
+        ).select_related('make')[:10]
 
         results = process_results(makes, 'makes')
         results += process_results(v_models, 'models')
