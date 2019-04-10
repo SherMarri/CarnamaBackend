@@ -1,4 +1,5 @@
 import boto3
+from django.core.paginator import Paginator
 from rest_framework import status
 from rest_framework.generics import RetrieveAPIView, get_object_or_404
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -98,6 +99,59 @@ class GetPresignedUrlsAPIView(APIView):
                 ExpiresIn=120, HttpMethod='PUT')
             urls.append(response)
         return urls
+
+
+class ListAdsAPIView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        return self.search()
+
+    def search(self):
+        params = self.request.GET
+        if 'city_id' in params:
+            queryset = models.Ad.objects.filter(city_id=params['city_id'])
+        elif 'city' in params:
+            queryset = models.Ad.objects.filter(city__name=params['city'])
+        elif 'region_id' in params:
+            queryset = models.Ad.objects.filter(city__region_id=params['region_id'])
+        elif 'region' in params:
+            queryset = models.Ad.objects.filter(city__region__name=params['region'])
+        else:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={
+                    'message': 'Region and city fields are missing.'
+                })
+
+        if 'model_id' in params:
+            queryset = queryset.filter(model_id=params['model_id'])
+        elif 'model' in params:
+            queryset = queryset.filter(model__name=params['model'])
+        elif 'make_id' in params:
+            queryset = queryset.filter(model__make_id=params['make_id'])
+        elif 'make' in params:
+            queryset = queryset.filter(model__make__name=params['make'])
+        queryset = queryset.filter(
+            status=models.Ad.APPROVED, is_active=True, is_verified=True
+        )
+        paginator = Paginator(queryset, 10)
+        if 'page' in params:
+            try:
+                results = paginator.get_page(params['page'])
+            except:
+                return Response(
+                    status=status.HTTP_400_BAD_REQUEST,
+                    data={
+                        'message': 'Invalid page number.'
+                    }
+                )
+        else:
+            results = paginator.get_page(1)
+
+        serializer = serializers.AdDetailsSerializer(results, many=True)
+        return Response(status=status.HTTP_200_OK, data=serializer.data)
+
 
 
 class AutosaleRequestViewSet(ModelViewSet):

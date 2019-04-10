@@ -20,7 +20,7 @@ class Make(BaseModel):
 
 class Model(BaseModel):
     name = models.CharField(max_length=128)
-    make = models.ForeignKey(Make, on_delete=models.CASCADE)
+    make = models.ForeignKey(Make, on_delete=models.CASCADE, related_name='models')
     is_popular = models.BooleanField(null=True, default=False)
 
 

@@ -134,7 +134,11 @@ def process_models(queryset):
     #     })
     # return results
     return list(map(lambda m: {
-        'id': m.id, 'type': 'model', 'text': '{0} {1}'.format(m.make.name, m.name)
+        'id': m.id, 'type': 'model', 'text': '{0} {1}'.format(m.make.name, m.name),
+        'make': {
+            'id': m.make.id,
+            'name': m.make.name
+        }
     }, queryset.all()))
 
 
@@ -152,17 +156,43 @@ class AutocompleteAPIView(APIView):
     WARNING: Unstable code, needs to be improved
     """
     permission_classes = (AllowAny,)
+
     def get(self, request):
         term = request.GET.get('term', None)
         region_id = request.GET.get('region_id')
+        if term is None or region_id is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={
+                'message': 'Search term or region missing.'
+            })
 
-        makes = models.Make.objects.filter(name__istartswith=term)[:10]
-        v_models = models.Model.objects.filter(
-            Q(name__istartswith=term) | Q(make__name__istartswith=term), make__region_id=region_id
-        ).select_related('make')[:10]
+        tokens = term.split(' ')
+        # makes = models.Make.objects.filter(name__istartswith=term)[:10]
+        makes = self.get_matching_makes(tokens, region_id)
+        v_models = self.get_matching_models(tokens, region_id)
+        # v_models = models.Model.objects.filter(
+        #     Q(name__istartswith=term) | Q(make__name__istartswith=term), make__region_id=region_id
+        # ).select_related('make')[:10]
 
         results = process_results(makes, 'makes')
         results += process_results(v_models, 'models')
         return Response(status=status.HTTP_200_OK, data=results)
 
+    def get_matching_makes(self, tokens, region_id):
+        query = Q()
+        for t in tokens:
+            if len(t) > 0:
+                query = query | Q(name__istartswith=t)
 
+        matching_makes = models.Make.objects.filter(
+            query, region_id=region_id).order_by('name')[:10]
+        return matching_makes
+
+    def get_matching_models(self, tokens, region_id):
+        query = Q()
+        for t in tokens:
+            if len(t) > 0:
+                query = query | Q(name__istartswith=t)
+        matching_models = models.Model.objects.filter(
+            query, make__region_id=region_id
+        ).select_related('make').order_by('name')[:10]
+        return matching_models
