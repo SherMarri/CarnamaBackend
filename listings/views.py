@@ -76,7 +76,6 @@ class FetchAdAPIView(RetrieveAPIView):
         return Response(status=status.HTTP_200_OK, data=data)
 
 
-
 class GetPresignedUrlsAPIView(APIView):
     permission_classes = (AllowAny,)
 
@@ -150,7 +149,15 @@ class ListAdsAPIView(APIView):
             results = paginator.get_page(1)
 
         serializer = serializers.AdDetailsSerializer(results, many=True)
-        return Response(status=status.HTTP_200_OK, data=serializer.data)
+        return Response(
+            status=status.HTTP_200_OK,
+            data={
+                'items': serializer.data,
+                'page': results.number,
+                'total_pages': paginator.num_pages,
+                'count': paginator.count
+            }
+        )
 
 
 
