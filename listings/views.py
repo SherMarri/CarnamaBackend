@@ -134,6 +134,39 @@ class ListAdsAPIView(APIView):
         queryset = queryset.filter(
             status=models.Ad.APPROVED, is_active=True, is_verified=True
         )
+
+        if 'year_from' in params:
+            queryset = queryset.filter(year__gte=params['year_from'])
+        if 'year_to' in params:
+            queryset = queryset.filter(year__lte=params['year_to'])
+
+        if 'price_from' in params:
+            queryset = queryset.filter(price__gte=params['price_from'])
+        if 'price_to' in params:
+            queryset = queryset.filter(price__lte=params['price_to'])
+
+        if 'registration_city' in params:
+            queryset = queryset.filter(registration_city_id=params['registration_city'])
+
+        if 'color' in params:
+            queryset = queryset.filter(color=params['color'])
+
+        if 'mileage_from' in params:
+            queryset = queryset.filter(mileage__gte=params['mileage_from'])
+        if 'mileage_to' in params:
+            queryset = queryset.filter(mileage__lte=params['mileage_to'])
+
+        if 'transmission' in params:
+            queryset = queryset.filter(transmission_type=params['transmission'])
+
+        if 'assembly' in params:
+            queryset = queryset.filter(assembly_type=params['assembly'])
+
+
+        if 'sort_by' in params:
+            queryset = self.sort_queryset_by(queryset, params['sort_by'])
+        else:
+            queryset = queryset.order_by('updated_at')
         paginator = Paginator(queryset, 10)
         if 'page' in params:
             try:
@@ -158,6 +191,10 @@ class ListAdsAPIView(APIView):
                 'count': paginator.count
             }
         )
+
+    def sort_queryset_by(self, queryset, sort_by):
+        #TODO
+        pass
 
 
 
