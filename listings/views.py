@@ -193,7 +193,22 @@ class ListAdsAPIView(APIView):
         )
 
     def sort_queryset_by(self, queryset, sort_by):
-        #TODO
+        if sort_by == 'PRICE_LOW_TO_HIGH':
+            return queryset.order_by('price')
+        elif sort_by == 'PRICE_HIGH_TO_LOW':
+            return queryset.order_by('-price')
+        elif sort_by == 'DATE_RECENT_FIRST':
+            return queryset.order_by('-updated_at')
+        elif sort_by == 'DATE_OLDEST_FIRST':
+            return queryset.order_by('updated_at')
+        elif sort_by == 'YEAR_LATEST_FIRST':
+            return queryset.order_by('-year')
+        elif sort_by == 'YEAR_OLDEST_FIRST':
+            return queryset.order_by('-year')
+        elif sort_by == 'MILEAGE_LOW_TO_HIGH':
+            return queryset.order_by('mileage')
+        elif sort_by == 'MILEAGE_HIGH_TO_LOW':
+            return queryset.order_by('-mileage')
         pass
 
 
