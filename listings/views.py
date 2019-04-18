@@ -1,4 +1,5 @@
 import boto3
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from rest_framework import status
 from rest_framework.generics import RetrieveAPIView, get_object_or_404
