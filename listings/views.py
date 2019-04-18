@@ -167,7 +167,7 @@ class ListAdsAPIView(APIView):
         if 'sort_by' in params:
             queryset = self.sort_queryset_by(queryset, params['sort_by'])
         else:
-            queryset = queryset.order_by('updated_at')
+            queryset = queryset.order_by('-created_at')
         paginator = Paginator(queryset, 10)
         if 'page' in params:
             try:
