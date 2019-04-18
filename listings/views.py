@@ -205,7 +205,7 @@ class ListAdsAPIView(APIView):
         elif sort_by == 'YEAR_LATEST_FIRST':
             return queryset.order_by('-year')
         elif sort_by == 'YEAR_OLDEST_FIRST':
-            return queryset.order_by('-year')
+            return queryset.order_by('year')
         elif sort_by == 'MILEAGE_LOW_TO_HIGH':
             return queryset.order_by('mileage')
         elif sort_by == 'MILEAGE_HIGH_TO_LOW':
