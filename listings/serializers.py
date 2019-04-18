@@ -37,7 +37,7 @@ class AdDetailsSerializer(serializers.ModelSerializer):
                   'body_type', 'transmission_type', 'modification_type',
                   'gas_equipment', 'assembly_type', 'fuel_type', 'address',
                   'city', 'registration_city', 'price', 'contact', 'contact_person',
-                  'comments', 'features', 'views', 'youtube_link', 'updated_at',
+                  'comments', 'features', 'views', 'youtube_link', 'created_at',
                   'photos', 'assembly_type')
 
     def get_model(self, obj):

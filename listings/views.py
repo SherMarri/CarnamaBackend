@@ -199,9 +199,9 @@ class ListAdsAPIView(APIView):
         elif sort_by == 'PRICE_HIGH_TO_LOW':
             return queryset.order_by('-price')
         elif sort_by == 'DATE_RECENT_FIRST':
-            return queryset.order_by('-updated_at')
+            return queryset.order_by('-created_at')
         elif sort_by == 'DATE_OLDEST_FIRST':
-            return queryset.order_by('updated_at')
+            return queryset.order_by('created_at')
         elif sort_by == 'YEAR_LATEST_FIRST':
             return queryset.order_by('-year')
         elif sort_by == 'YEAR_OLDEST_FIRST':
