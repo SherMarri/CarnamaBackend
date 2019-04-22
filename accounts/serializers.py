@@ -22,3 +22,8 @@ class JWTUserDetailsSerializer(serializers.Serializer):
             'display_name': user.profile.display_name
         }
         return data
+
+
+class VerifyCodeSerializer(serializers.Serializer):
+    phone_number = serializers.CharField(max_length=20)
+    code = serializers.CharField(max_length=10)
