@@ -73,7 +73,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_WHITELIST = (
-    'localhost:3000',
+    'http://localhost:3000',
     'dev.carnama.com',
     '34.205.24.235'
 )
