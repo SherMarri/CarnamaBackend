@@ -30,6 +30,6 @@ class Profile(BaseModel):
 
 class TemporaryUser(BaseModel):
     name = models.CharField(max_length=20, null=True, blank=True, unique=True)
-    contact = models.CharField(max_length=20)
+    contact = models.CharField(max_length=20, unique=True)
     verification_code = models.CharField(max_length=10)
     is_verified = models.BooleanField(default=False)

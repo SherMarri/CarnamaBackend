@@ -92,12 +92,7 @@ class CustomRegisterView(RegisterView):
 class VerifyContactAPIView(APIView):
     """
     Verifies a phone number. Performs following checks:
-    1. If user is logged in, check if phone number is associated with this user.
-        - If associated, return OKAY.
-        - If not associated, check:
-            - If this phone number is associated with some other user, return BAD REQUEST.
-            - Else send verification code.
-    2. Else (Not logged in):
+    Not logged in:
         - Check if phone number is associated with a user:
             - YES: Return ALREADY_ASSOCIATED
             - NO: Send verification code
@@ -105,42 +100,48 @@ class VerifyContactAPIView(APIView):
     permission_classes = (AllowAny,)
 
     def post(self, request):
-        if request.user.is_authenticated:
-            pass
+        data = request.data
+        if 'phone' not in data:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={'message': 'Phone missing!'}
+            )
         else:
-            data = request.data
-            if 'phone' not in data:
+            phone_number = data['phone']
+            display_name = data.get('name', None)
+            # TODO: Validate format, check if already associated with an
+            #  account, else send verification code
+            if models.User.objects.filter(username=phone_number).exists():
                 return Response(
                     status=status.HTTP_400_BAD_REQUEST,
-                    data={'message': 'Phone number missing!'}
+                    data={
+                        'code': 'USER_EXISTS',
+                        'message': 'A user with this phone number already exists. '
+                                   'If this is your phone number, please login and try again.'
+                    }
+                )
+            sid = getattr(settings, 'TWILIO_ACCOUNT_SID', None)
+            auth_token = getattr(settings, 'TWILIO_AUTH_TOKEN', None)
+            twilio_number = getattr(settings, 'TWILIO_PHONE_NUMBER', None)
+            if sid is None or auth_token is None or twilio_number is None:
+                return Response(
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    data={'message': 'Something unexpected occurred, '
+                                     'please contact Carnama support team!'}
                 )
             else:
-                phone_number = data['phone']
-                display_name = data.get('name', None)
-                # TODO: Validate format, check if already associated with an
-                #  account, else send verification code
-                sid = getattr(settings, 'TWILIO_ACCOUNT_SID', None)
-                auth_token = getattr(settings, 'TWILIO_AUTH_TOKEN', None)
-                twilio_number = getattr(settings, 'TWILIO_PHONE_NUMBER', None)
-                if sid is None or auth_token is None or twilio_number is None:
-                    return Response(
-                        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        data={'message': 'Something unexpected occurred, '
-                                         'please contact Carnama support team!'}
-                    )
-                else:
-                    client = Client(sid, auth_token)
-                    user = create_temporary_user(phone_number, display_name)
-                    message = client.messages.create(
-                        body='Your Carnama Verification Code is: {0}.'.format(user.verification_code),
-                        to=phone_number,
-                        from_=twilio_number
-                    )
-                    return Response(
-                        status=status.HTTP_200_OK,
-                        data={'message': 'Verification code sent to the provided '
-                                         'contact number.'}
-                    )
+                client = Client(sid, auth_token)
+                user = create_temporary_user(phone_number, display_name)
+                message = client.messages.create(
+                    body='Your Carnama Verification Code is: {0}.'.format(user.verification_code),
+                    to=phone_number,
+                    from_=twilio_number
+                )
+                return Response(
+                    status=status.HTTP_200_OK,
+                    data={'message': 'Verification code sent to the provided '
+                                     'contact number.'}
+                )
 
 
 def create_temporary_user(phone_number, display_name=None):
