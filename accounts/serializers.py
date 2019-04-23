@@ -25,5 +25,5 @@ class JWTUserDetailsSerializer(serializers.Serializer):
 
 
 class VerifyCodeSerializer(serializers.Serializer):
-    phone_number = serializers.CharField(max_length=20)
+    phone = serializers.CharField(max_length=20)
     code = serializers.CharField(max_length=10)

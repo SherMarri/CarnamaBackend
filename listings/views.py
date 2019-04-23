@@ -42,6 +42,7 @@ class PostAdAPIView(APIView):
     def post(self, request):
         data = request.data
         ad_data = data['ad']
+        ad_data['user'] = request.user.id
         ad_feature_ids = data['feature_ids']
         ad_image_ids = data['image_ids']
         serializer = serializers.AdSerializer(data=ad_data)

@@ -109,13 +109,13 @@ class VerifyContactAPIView(APIView):
             pass
         else:
             data = request.data
-            if 'phone_number' not in data:
+            if 'phone' not in data:
                 return Response(
                     status=status.HTTP_400_BAD_REQUEST,
                     data={'message': 'Phone number missing!'}
                 )
             else:
-                phone_number = data['phone_number']
+                phone_number = data['phone']
                 display_name = data.get('name', None)
                 # TODO: Validate format, check if already associated with an
                 #  account, else send verification code
@@ -132,7 +132,7 @@ class VerifyContactAPIView(APIView):
                     client = Client(sid, auth_token)
                     user = create_temporary_user(phone_number, display_name)
                     message = client.messages.create(
-                        body='Your Carnama verification code is {0}.'.format(user.verification_code),
+                        body='Your Carnama Verification Code is: {0}.'.format(user.verification_code),
                         to=phone_number,
                         from_=twilio_number
                     )
@@ -182,7 +182,7 @@ class VerifyCodeAPIView(APIView):
             )
 
         temporary_user = models.TemporaryUser.objects.filter(
-            contact=data['phone_number'], verification_code=data['code']
+            contact=data['phone'], verification_code=data['code']
         ).first()
 
         if temporary_user is None:
