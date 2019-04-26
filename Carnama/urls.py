@@ -23,5 +23,6 @@ urlpatterns = [
     url('api/v1/listings/', include('listings.urls')),
     url('api/v1/vehicles/', include('vehicles.urls')),
     url('api/v1/common/', include('common.urls')),
-    url('api/v1/transactions/', include('transactions.urls'))
+    url('api/v1/transactions/', include('transactions.urls')),
+    url('api/v1/customers/', include('customer.urls'))
 ]
