@@ -53,7 +53,8 @@ INSTALLED_APPS = [
     'vehicles',
     'common',
     'listings',
-    'transactions'
+    'transactions',
+    'customer'
 ]
 
 SITE_ID = 1
@@ -128,9 +129,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    # },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },

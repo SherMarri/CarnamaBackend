@@ -116,8 +116,7 @@ class VerifyContactAPIView(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                     data={
                         'code': 'USER_EXISTS',
-                        'message': 'A user with this phone number already exists. '
-                                   'If this is your phone number, please login and try again.'
+                        'message': 'A user with this phone number already exists.'
                     }
                 )
             sid = getattr(settings, 'TWILIO_ACCOUNT_SID', None)
@@ -198,11 +197,19 @@ class VerifyCodeAPIView(APIView):
         temporary_user.save()
 
         # Create a new user with these credentials
-        user_data = {
-            'username': temporary_user.contact,
-            'password1': temporary_user.verification_code,
-            'password2': temporary_user.verification_code
-        }
+        user_data = None
+        if data['process'] == 'SIGN_UP':
+            user_data = {
+                'username': temporary_user.contact,
+                'password1': data['password1'],
+                'password2': data['password2']
+            }
+        elif data['process'] == 'SELLING':
+            user_data = {
+                'username': temporary_user.contact,
+                'password1': temporary_user.verification_code,
+                'password2': temporary_user.verification_code
+            }
         user_serializer = RegisterSerializer(data=user_data)
         user_serializer.is_valid(raise_exception=True)
         user = user_serializer.save(request)
@@ -223,5 +230,3 @@ class VerifyCodeAPIView(APIView):
             status=status.HTTP_200_OK,
             data=serializer.data
         )
-
-

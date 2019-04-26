@@ -100,4 +100,12 @@ class ReportedAdSerializer(serializers.ModelSerializer):
                   'is_banned')
 
 
+class FavoritedAdSerializer(serializers.ModelSerializer):
+    ad = AdDetailsSerializer()
+
+    class Meta:
+        model = models.FavoritedAd
+        fields = ('user, ad',)
+
+
 
