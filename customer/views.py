@@ -40,7 +40,7 @@ class DashboardSummaryAPIView(APIView):
             user_id=request.user.id
         ).select_related('model').prefetch_related('features').order_by(
             '-created_at'
-        )[:5]
+        )[:3]
         my_ads_serializer = AdDetailsSerializer(my_ads, many=True)
 
         # Fetch top 5 favorited ads
@@ -49,7 +49,7 @@ class DashboardSummaryAPIView(APIView):
         ).count()
         favorited_ads = listings_models.FavoritedAd.objects.filter(
             user_id=request.user.id
-        ).select_related('ad__model')
+        ).select_related('ad__model')[:3]
         favorited_ads_serializer = FavoritedAdSerializer(favorited_ads, many=True)
 
         response_data = {
