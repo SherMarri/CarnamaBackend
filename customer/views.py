@@ -78,6 +78,8 @@ class UserAdsAPIView(APIView):
         queryset = listings_models.Ad.objects.filter(
             user_id=request.user.id).select_related('model').prefetch_related(
             'photos'
+        ).annotate(
+            favorited=Count('favorited_ads', filter=Q(favorited_ads__user_id=request.user.id))
         ).order_by('-created_at')
         paginator = Paginator(queryset, 10)
         if 'page' in params:
