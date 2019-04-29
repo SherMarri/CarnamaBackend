@@ -77,7 +77,7 @@ class UserAdsAPIView(APIView):
         queryset = listings_models.Ad.objects.filter(
             user_id=request.user.id).select_related('model').prefetch_related(
             'photos'
-        )
+        ).order_by('-created_at')
         paginator = Paginator(queryset, 10)
         if 'page' in params:
             try:
