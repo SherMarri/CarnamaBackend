@@ -169,6 +169,8 @@ class ListAdsAPIView(APIView):
             queryset = self.sort_queryset_by(queryset, params['sort_by'])
         else:
             queryset = queryset.order_by('-created_at')
+
+        queryset = queryset.select_related('model').prefetch_related('photos')
         paginator = Paginator(queryset, 10)
         if 'page' in params:
             try:
