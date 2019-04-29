@@ -45,7 +45,7 @@ class AdDetailsSerializer(serializers.ModelSerializer):
         return '{0} {1} {2}'.format(obj.model.make.name, obj.model.name, obj.year)
 
     def get_favorited(self, obj):
-        return True if not getattr(obj, 'favorited', None) else False
+        return True if getattr(obj, 'favorited', None) else False
 
     def get_photos(self, obj):
         photos = []
