@@ -105,7 +105,7 @@ class FavoritedAdSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.FavoritedAd
-        fields = ('user, ad',)
+        fields = ('user', 'ad',)
 
 
 
