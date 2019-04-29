@@ -169,7 +169,7 @@ class ListAdsAPIView(APIView):
             queryset = queryset.annotate(
                 favorited=Count(
                     'favorited_ads',
-                    filter=Q(favorited_ads__user_id=self.request.user)
+                    filter=Q(favorited_ads__user_id=self.request.user.id)
                 )
             )
 

@@ -1,4 +1,5 @@
 from django.core.paginator import Paginator
+from django.db.models import Count, Q
 from rest_framework import status
 from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
@@ -112,8 +113,6 @@ class FavoritedAdsAPIView(APIView):
 
     def get(self, request):
         params = self.request.GET
-        from django.db.models import Count
-        from django.db.models import Q
         queryset = listings_models.Ad.objects.filter(
             favorited_ads__user_id=request.user.id
         ).annotate(
