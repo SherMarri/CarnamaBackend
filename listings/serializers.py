@@ -45,7 +45,7 @@ class AdDetailsSerializer(serializers.ModelSerializer):
         return '{0} {1} {2}'.format(obj.model.make.name, obj.model.name, obj.year)
 
     def get_favorited(self, obj):
-        if obj.favorited is not None and obj.favorited > 0:
+        if getattr(obj, 'favorited', None) is not None and obj.favorited > 0:
             return True
         else:
             return False
