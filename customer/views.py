@@ -73,6 +73,7 @@ class UserAdsAPIView(APIView):
     permission_classes = (IsCustomer,)
 
     def get(self, request):
+        params = self.request.GET
         queryset = listings_models.Ad.objects.filter(
             user_id=request.user.id).select_related('model').prefetch_related(
             'photos'
