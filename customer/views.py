@@ -102,3 +102,43 @@ class UserAdsAPIView(APIView):
                 'count': paginator.count
             }
         )
+
+
+class FavoritedAdsAPIView(APIView):
+    """
+    APIView that returns data for manage ads page on dashboard
+    """
+    permission_classes = (IsCustomer,)
+
+    def get(self, request):
+        params = self.request.GET
+        queryset = listings_models.Ad.objects.filter(
+            favorited_ads__user_id=request.user.id
+        ).select_related('model', 'city').prefetch_related(
+            'photos', 'features'
+        ).order_by('-created_at')
+
+        paginator = Paginator(queryset, 10)
+        if 'page' in params:
+            try:
+                results = paginator.get_page(params['page'])
+            except:
+                return Response(
+                    status=status.HTTP_400_BAD_REQUEST,
+                    data={
+                        'message': 'Invalid page number.'
+                    }
+                )
+        else:
+            results = paginator.get_page(1)
+
+        serializer = AdDetailsSerializer(results, many=True)
+        return Response(
+            status=status.HTTP_200_OK,
+            data={
+                'items': serializer.data,
+                'page': results.number,
+                'total_pages': paginator.num_pages,
+                'count': paginator.count
+            }
+        )
