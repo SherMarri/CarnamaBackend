@@ -106,7 +106,7 @@ class UserAdsAPIView(APIView):
 
 class FavoritedAdsAPIView(APIView):
     """
-    APIView that returns data for manage ads page on dashboard
+    APIView that returns data for favorited ads page on dashboard
     """
     permission_classes = (IsCustomer,)
 
