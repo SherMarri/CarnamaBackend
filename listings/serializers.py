@@ -30,6 +30,7 @@ class AdDetailsSerializer(serializers.ModelSerializer):
     modification_type = serializers.SerializerMethodField()
     fuel_type = serializers.SerializerMethodField()
     assembly_type = serializers.SerializerMethodField()
+    favorited = serializers.SerializerMethodField()
 
     class Meta:
         model = models.Ad
@@ -38,10 +39,13 @@ class AdDetailsSerializer(serializers.ModelSerializer):
                   'gas_equipment', 'assembly_type', 'fuel_type', 'address',
                   'city', 'registration_city', 'price', 'contact', 'contact_person',
                   'comments', 'features', 'views', 'youtube_link', 'created_at',
-                  'photos', 'assembly_type')
+                  'photos', 'assembly_type', 'favorited')
 
     def get_model(self, obj):
         return '{0} {1} {2}'.format(obj.model.make.name, obj.model.name, obj.year)
+
+    def get_favorited(self, obj):
+        return getattr(obj, 'favorited', False)
 
     def get_photos(self, obj):
         photos = []

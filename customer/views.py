@@ -112,8 +112,12 @@ class FavoritedAdsAPIView(APIView):
 
     def get(self, request):
         params = self.request.GET
+        from django.db.models import Count
+        from django.db.models import Q
         queryset = listings_models.Ad.objects.filter(
             favorited_ads__user_id=request.user.id
+        ).annotate(
+            favorited=Count('favorited_ads', filter=Q(favorited_ads__user_id=request.user))
         ).select_related('model', 'city').prefetch_related(
             'photos', 'features'
         ).order_by('-created_at')
