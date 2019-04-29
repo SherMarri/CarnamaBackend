@@ -92,7 +92,7 @@ class UserAdsAPIView(APIView):
         else:
             results = paginator.get_page(1)
 
-        serializer = serializers.AdDetailsSerializer(results, many=True)
+        serializer = AdDetailsSerializer(results, many=True)
         return Response(
             status=status.HTTP_200_OK,
             data={
