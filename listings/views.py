@@ -1,6 +1,7 @@
 import boto3
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Count, Q
 from rest_framework import status
 from rest_framework.generics import RetrieveAPIView, get_object_or_404
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -164,6 +165,13 @@ class ListAdsAPIView(APIView):
         if 'assembly' in params:
             queryset = queryset.filter(assembly_type=params['assembly'])
 
+        if self.request.user.is_authenticated:
+            queryset = queryset.annotate(
+                favorited=Count(
+                    'favorited_ads',
+                    filter=Q(favorited_ads__user_id=self.request.user)
+                )
+            )
 
         if 'sort_by' in params:
             queryset = self.sort_queryset_by(queryset, params['sort_by'])
