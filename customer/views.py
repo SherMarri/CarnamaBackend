@@ -4,6 +4,9 @@ from rest_framework import status
 from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from accounts.models import Profile
+from accounts.serializers import ProfileSerializer
 from listings import models as listings_models
 from listings.serializers import AdDetailsSerializer, FavoritedAdSerializer
 
@@ -147,3 +150,19 @@ class FavoritedAdsAPIView(APIView):
                 'count': paginator.count
             }
         )
+
+
+class UserSettingsAPIView(APIView):
+    """
+    APIView for getting and setting user profile settings
+    """
+    permission_classes = (IsCustomer,)
+
+    def get(self, request):
+        profiile = Profile.objects.filter(user_id=request.user.id).first()
+        if not profiile:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ProfileSerializer(instance=profiile)
+        return Response(status=status.HTTP_200_OK, data=serializer.data)
+
