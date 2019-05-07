@@ -264,11 +264,11 @@ class VerifyContactAPIView(APIView):
                     user_id=user.id, contact=phone_number,
                     verification_code=generate_verification_code()
                 ).save()
-                # message = client.messages.create(
-                #     body='Your Carnama Verification Code is: {0}.'.format(v_code.verification_code),
-                #     to=phone_number,
-                #     from_=twilio_number
-                # )
+                message = client.messages.create(
+                    body='Your Carnama Verification Code is: {0}.'.format(v_code.verification_code),
+                    to=phone_number,
+                    from_=twilio_number
+                )
                 return Response(
                     status=status.HTTP_200_OK,
                     data={'message': 'Verification code sent to the provided '
