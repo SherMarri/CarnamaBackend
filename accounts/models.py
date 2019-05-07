@@ -33,3 +33,13 @@ class TemporaryUser(BaseModel):
     contact = models.CharField(max_length=20, unique=True)
     verification_code = models.CharField(max_length=10)
     is_verified = models.BooleanField(default=False)
+
+
+class VerificationCode(BaseModel):
+    """
+    Model for temporarily storing user, phone and verification code for contact change request
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    contact = models.CharField(max_length=20)
+    verification_code = models.CharField(max_length=10)
+    is_verified = models.BooleanField(default=False)
