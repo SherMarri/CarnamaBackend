@@ -70,11 +70,11 @@ class Ad(BaseModel):
     MODIFICATION_3_5 = 4
     MODIFICATION_5_5 = 5
     MODIFICATION_TYPES = (
-        (MODIFICATION_1_8, "1.8L"),
-        (MODIFICATION_2_0, "2.0L"),
-        (MODIFICATION_2_5, "2.5L"),
-        (MODIFICATION_3_5, "3.5L"),
-        (MODIFICATION_5_5, "5.5L")
+        (MODIFICATION_1_8, "1.8 L"),
+        (MODIFICATION_2_0, "2.0 L"),
+        (MODIFICATION_2_5, "2.5 L"),
+        (MODIFICATION_3_5, "3.5 L"),
+        (MODIFICATION_5_5, "5.5 L")
     )
     modification_type = models.IntegerField(choices=MODIFICATION_TYPES)
 
