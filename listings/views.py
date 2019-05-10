@@ -235,6 +235,23 @@ class ListAdsAPIView(APIView):
         pass
 
 
+class FavoritedAdsAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, id):
+        try:
+            models.FavoritedAd.objects.get_or_create(
+                 ad_id=id, user_id=request.user.id
+             )
+            return Response(status=status.HTTP_200_OK)
+        except:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={
+                    'message': 'Ad does not exist'
+                }
+             )
+
 
 class AutosaleRequestViewSet(ModelViewSet):
     permission_classes = (AllowAny,)
