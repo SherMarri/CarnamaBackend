@@ -1,3 +1,5 @@
+import datetime
+
 import boto3
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -66,7 +68,16 @@ class FetchAdAPIView(RetrieveAPIView):
 
         # Increment ad view
         ad.views += 1
+        daily_views = ad.daily_views.filter(date=datetime.date.today()).first()
+        if daily_views:
+            daily_views.views += 1
+            daily_views.save()
+        else:
+            daily_views = models.DailyAdViews(ad_id=ad.id, views=1,
+                                              date=datetime.date.today())
         ad.save()
+        daily_views.save()
+        ad.views_today = daily_views.views
         if ad is None:
             return Response(status=status.HTTP_404_NOT_FOUND,
                             data={

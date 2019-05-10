@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -132,7 +134,8 @@ class FavoritedAd(BaseModel):
 
 
 class DailyAdViews(BaseModel):
-    ad = models.ForeignKey(Ad, on_delete=models.CASCADE)
+    ad = models.ForeignKey(Ad, on_delete=models.CASCADE,
+                           related_name='daily_views')
     date = models.DateField()
     views = models.IntegerField(default=0)
 

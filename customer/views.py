@@ -1,3 +1,5 @@
+import datetime
+
 from django.conf import LazySettings
 from django.core.paginator import Paginator
 from django.db.models import Count, Q
@@ -89,6 +91,7 @@ class UserAdsAPIView(APIView):
         ).annotate(
             favorited=Count('favorited_ads', filter=Q(favorited_ads__user_id=request.user.id))
         ).order_by('-created_at')
+
         paginator = Paginator(queryset, 10)
         if 'page' in params:
             try:
@@ -103,6 +106,7 @@ class UserAdsAPIView(APIView):
         else:
             results = paginator.get_page(1)
 
+        self.associate_daily_views(results)
         serializer = AdDetailsSerializer(results, many=True)
         return Response(
             status=status.HTTP_200_OK,
@@ -113,6 +117,21 @@ class UserAdsAPIView(APIView):
                 'count': paginator.count
             }
         )
+
+    @staticmethod
+    def associate_daily_views(results):
+        ids = [a.id for a in results.object_list]
+        daily_views = listings_models.DailyAdViews.objects.filter(
+            ad_id__in=ids, date=datetime.date.today()
+        )
+
+        daily_views_dict = {v.ad_id: v.views for v in daily_views}
+
+        for a in results.object_list:
+            if a.id in daily_views_dict:
+                a.views_today = daily_views_dict[a.id]
+            else:
+                a.views_today = 0
 
 
 class FavoritedAdsAPIView(APIView):
